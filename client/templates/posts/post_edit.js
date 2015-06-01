@@ -1,3 +1,16 @@
+Template.postEdit.onCreated(function() {
+    Session.set('postEditErrors', {});
+});
+
+Template.postEdit.helpers({
+    errorMessage: function(field) {
+        return Session.get('postEditErrors')[field];
+    },
+    errorClass: function (field) {
+        return !!Session.get('postEditErrors')[field] ? 'has-error' : '';
+    }
+});
+
 Template.postEdit.events({
     'submit form': function(e) {
         e.preventDefault();
@@ -11,7 +24,7 @@ Template.postEdit.events({
         Posts.update(currentPostId, {$set: postProperties}, function(error) {
             if (error) {
                 // display the error to the user
-                alert(error.reason);
+                Errors.throw(error.reason);
             } else {
                 Router.go('postPage', {_id: currentPostId});
             }
